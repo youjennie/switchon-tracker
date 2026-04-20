@@ -83,6 +83,17 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
 
+      <section className="p-4 sm:p-6 border-b border-[var(--color-beige)]">
+        <div className="max-w-4xl mx-auto">
+          <MonthlyCalendar
+            schedule={schedule}
+            currentDay={currentDay}
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+          />
+        </div>
+      </section>
+
       <div className="flex-1 flex flex-col lg:flex-row print-flex-col">
         <Sidebar
           profile={profile}
@@ -102,24 +113,17 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
             onSelectDay={setSelectedDay}
           />
 
-          <div className="flex-1 grid grid-cols-1 2xl:grid-cols-[1fr_360px] print-full">
-            <div className="min-w-0">
-              <Timeline
-                plan={selectedPlan}
-                isToday={selectedDay === currentDay}
-                nowMinutes={nowMinutes}
-                logs={logs}
-                onAddEntry={handleAddEntry}
-                onRemoveEntry={handleRemoveEntry}
-              />
-            </div>
-            <div className="2xl:border-l border-[var(--color-beige)] p-4 sm:p-6 2xl:max-w-[360px] space-y-5">
-              <MonthlyCalendar
-                schedule={schedule}
-                currentDay={currentDay}
-                selectedDay={selectedDay}
-                onSelectDay={setSelectedDay}
-              />
+          <Timeline
+            plan={selectedPlan}
+            isToday={selectedDay === currentDay}
+            nowMinutes={nowMinutes}
+            logs={logs}
+            onAddEntry={handleAddEntry}
+            onRemoveEntry={handleRemoveEntry}
+          />
+
+          <div className="p-4 sm:p-6 border-t border-[var(--color-beige)]">
+            <div className="max-w-3xl">
               <Participants />
             </div>
           </div>
