@@ -1,0 +1,296 @@
+export type Lang = "ko" | "en";
+
+type Msg = Record<string, string>;
+
+const KO: Msg = {
+  // app
+  "app.print": "프린트 / PDF 저장",
+  "app.langShort": "KO",
+  "app.langSwitchTo": "English",
+  // landing
+  "landing.aria": "시작하기",
+  "landing.cta": "봉투를 열어보세요",
+  "landing.opening": "여는 중...",
+  "landing.hint": "click to begin",
+  // setup
+  "setup.badge": "SWITCH-ON · 4 WEEKS",
+  "setup.title": "대사 스위치를 켤 준비",
+  "setup.subtitle":
+    "시작 시각을 기준으로 28일 타임라인이 생성됩니다. 중도에 일정이 바뀌어도 타임라인이 현재 시각을 따라갑니다.",
+  "setup.name": "이름",
+  "setup.namePh": "박용우",
+  "setup.weight": "체중 (kg)",
+  "setup.weightPh": "68",
+  "setup.proteinPreview": "권장 단백질 목표:",
+  "setup.proteinFormula": "(체중 × 1.5)",
+  "setup.proteinUnit": "g / 일",
+  "setup.startAt": "시작 날짜 / 시간",
+  "setup.startHint":
+    "이 시각이 Day 1의 기준점이 됩니다. 매 끼니와 단식 구간이 이 시각을 기준으로 펼쳐져요.",
+  "setup.submit": "Switch On →",
+  "setup.errName": "이름을 입력해 주세요.",
+  "setup.errWeight": "체중은 30~200kg 사이로 입력해 주세요.",
+  "setup.errStartAt": "시작 날짜/시간을 입력해 주세요.",
+  // sidebar
+  "sidebar.proteinHeader": "Protein Fuel",
+  "sidebar.proteinNote": "Phase 2에서 자동 집계 예정",
+  "sidebar.fastActive": "단식 중",
+  "sidebar.fastWindow": "Fasting Window",
+  "sidebar.fastActiveCaption": "Fasting Active",
+  "sidebar.remaining": "남음",
+  "sidebar.after": "후",
+  "sidebar.nextFast": "다음 단식",
+  "sidebar.noFast": "오늘 단식 일정이 없습니다.",
+  "sidebar.startedAt": "시작:",
+  "sidebar.reset": "프로그램 다시 시작",
+  "sidebar.resetConfirm": "28일 프로그램을 처음부터 다시 시작합니다. 계속할까요?",
+  "sidebar.dayOf": "Day {n} / 28",
+  "sidebar.beforeProgram": "프로그램 시작 전",
+  "sidebar.proteinGoalShort": "{w}kg · 단백질 목표 {p}g",
+  // calendar
+  "calendar.monthlyView": "Monthly View",
+  "calendar.prevMonth": "이전 달",
+  "calendar.nextMonth": "다음 달",
+  "calendar.weekday.sun": "일",
+  "calendar.weekday.mon": "월",
+  "calendar.weekday.tue": "화",
+  "calendar.weekday.wed": "수",
+  "calendar.weekday.thu": "목",
+  "calendar.weekday.fri": "금",
+  "calendar.weekday.sat": "토",
+  "calendar.month": "{y}년 {m}월",
+  "calendar.legend.boot": "Boot (D1–3)",
+  "calendar.legend.switch": "Switch (D4–7)",
+  "calendar.legend.booster": "Booster (D8–14)",
+  "calendar.legend.maintain": "Maintain (D15–28)",
+  // dayRail / timeline
+  "dayRail.letter": "D",
+  "timeline.now": "NOW",
+  "timeline.addLog": "+ 기록 추가",
+  "timeline.logPlaceholder": "무엇을 드셨나요? 예: 그릭요거트 150g · 계란 2개",
+  "timeline.save": "저장",
+  "timeline.cancel": "취소",
+  "timeline.logged": "기록됨",
+  "timeline.removeLog": "삭제",
+  "timeline.emptyLog": "아직 기록이 없어요. 카드를 눌러 시간당 식단을 남겨보세요.",
+  "timeline.verdictOk": "Switch On!",
+  "timeline.verdictNope": "아직은 안 돼요",
+  "timeline.slotDone": "계획대로 완료",
+  // phase
+  "phase.boot.label": "Boot-Up",
+  "phase.switch.label": "Switch-On",
+  "phase.booster.label": "Booster",
+  "phase.maintain.label": "Maintain",
+  "phase.boot.summary": "대사 스위치를 켜는 전환기. 단백질 쉐이크 중심 + 16시간 단식.",
+  "phase.switch.summary": "쉐이크 2회 + 가벼운 단백질 식사 1회. 저탄수·고단백 유지.",
+  "phase.booster.summary": "쉐이크 1회 + 정상 식사 2회. 운동 강도를 점차 올립니다.",
+  "phase.maintain.summary": "정상 식사 3회 + 선택적 쉐이크. 요요 방지 습관화 단계.",
+  // slots
+  "slot.shake.morning": "아침 단백질 쉐이크",
+  "slot.shake.morning.hint": "기상 직후 1팩",
+  "slot.shake.midday": "점심 단백질 쉐이크",
+  "slot.shake.midday.hint": "두 번째 1팩 + 녹색 채소 한 줌",
+  "slot.shake.evening": "저녁 단백질 쉐이크",
+  "slot.shake.evening.hint": "세 번째 1팩",
+  "slot.shake.eveningLow": "저녁 단백질 쉐이크",
+  "slot.shake.eveningLow.hint": "탄수 최소, 야식 금지",
+  "slot.meal.lunchProtein": "점심: 단백질 + 채소",
+  "slot.meal.lunchProtein.hint": "닭가슴살·계란·두부 中 1 + 잎채소",
+  "slot.meal.breakfastProtein": "아침: 단백질 풍부한 식사",
+  "slot.meal.breakfastProtein.hint": "계란 2개 · 그릭요거트 等",
+  "slot.meal.lunchNormal": "점심: 정상 식사",
+  "slot.meal.lunchNormal.hint": "단백질 손바닥 1 · 채소 두 손 · 탄수 주먹 1",
+  "slot.meal.breakfast": "아침 식사",
+  "slot.meal.breakfast.hint": "평소 식단 + 단백질 우선",
+  "slot.meal.lunch": "점심 식사",
+  "slot.meal.lunch.hint": "가공식품 제한 · 탄수 적정",
+  "slot.meal.dinner": "저녁 식사",
+  "slot.meal.dinner.hint": "가벼운 단백질 식사 · 야식 금지",
+  "slot.workout.walk": "가벼운 산책 30분",
+  "slot.workout.strength": "근력 운동 30~40분",
+  "slot.workout.strengthCardio": "근력 운동 40분 + 유산소 20분",
+  "slot.workout.maintain": "근력 + 유산소 루틴 유지",
+  "slot.fast.start": "단식 시작",
+  "slot.fast.start.hint": "다음 식사까지 수분 · 블랙커피 · 무가당 차만 허용",
+  "slot.fast.end": "단식 종료",
+  "slot.fast.end.hint": "첫 끼는 단백질 쉐이크로 부드럽게",
+  // kind labels (card header)
+  "kind.shake": "Protein Shake",
+  "kind.meal": "Meal",
+  "kind.snack": "Snack",
+  "kind.workout": "Workout",
+  "kind.fast-start": "Fast Start",
+  "kind.fast-end": "Fast End",
+  // participants
+  "participants.title": "현재 참여자",
+  "participants.subtitle": "함께 달리는 사람들",
+  "participants.placeholder": "이름을 적어주세요",
+  "participants.add": "추가",
+  "participants.empty": "아직 참여자가 없어요. 함께하는 분의 이름을 남겨보세요.",
+  "participants.remove": "삭제",
+};
+
+const EN: Msg = {
+  "app.print": "Print / Save PDF",
+  "app.langShort": "EN",
+  "app.langSwitchTo": "한국어",
+  "landing.aria": "Begin",
+  "landing.cta": "Open the envelope",
+  "landing.opening": "Opening...",
+  "landing.hint": "click to begin",
+  "setup.badge": "SWITCH-ON · 4 WEEKS",
+  "setup.title": "Ready to flip your metabolic switch",
+  "setup.subtitle":
+    "Your 28-day timeline is built from this start time. Even if your routine shifts, the timeline follows the real clock.",
+  "setup.name": "Name",
+  "setup.namePh": "Dr. Park",
+  "setup.weight": "Weight (kg)",
+  "setup.weightPh": "68",
+  "setup.proteinPreview": "Daily protein goal:",
+  "setup.proteinFormula": "(weight × 1.5)",
+  "setup.proteinUnit": "g / day",
+  "setup.startAt": "Start date / time",
+  "setup.startHint":
+    "This becomes the anchor for Day 1. Every meal and fasting window unfolds from this moment.",
+  "setup.submit": "Switch On →",
+  "setup.errName": "Please enter a name.",
+  "setup.errWeight": "Weight must be between 30 and 200 kg.",
+  "setup.errStartAt": "Please pick a start date and time.",
+  "sidebar.proteinHeader": "Protein Fuel",
+  "sidebar.proteinNote": "Auto-tallied in Phase 2",
+  "sidebar.fastActive": "Fasting",
+  "sidebar.fastWindow": "Fasting Window",
+  "sidebar.fastActiveCaption": "Fasting Active",
+  "sidebar.remaining": "left",
+  "sidebar.after": "from now",
+  "sidebar.nextFast": "Next fast",
+  "sidebar.noFast": "No fasting window today.",
+  "sidebar.startedAt": "Started:",
+  "sidebar.reset": "Restart program",
+  "sidebar.resetConfirm":
+    "This will restart the 28-day program from scratch. Continue?",
+  "sidebar.dayOf": "Day {n} / 28",
+  "sidebar.beforeProgram": "Before program",
+  "sidebar.proteinGoalShort": "{w}kg · {p}g protein goal",
+  "calendar.monthlyView": "Monthly View",
+  "calendar.prevMonth": "Previous month",
+  "calendar.nextMonth": "Next month",
+  "calendar.weekday.sun": "Sun",
+  "calendar.weekday.mon": "Mon",
+  "calendar.weekday.tue": "Tue",
+  "calendar.weekday.wed": "Wed",
+  "calendar.weekday.thu": "Thu",
+  "calendar.weekday.fri": "Fri",
+  "calendar.weekday.sat": "Sat",
+  "calendar.month": "{m} {y}",
+  "calendar.legend.boot": "Boot (D1–3)",
+  "calendar.legend.switch": "Switch (D4–7)",
+  "calendar.legend.booster": "Booster (D8–14)",
+  "calendar.legend.maintain": "Maintain (D15–28)",
+  "dayRail.letter": "D",
+  "timeline.now": "NOW",
+  "timeline.addLog": "+ Add log",
+  "timeline.logPlaceholder": "What did you have? e.g., Greek yogurt 150g · 2 eggs",
+  "timeline.save": "Save",
+  "timeline.cancel": "Cancel",
+  "timeline.logged": "Logged",
+  "timeline.removeLog": "Remove",
+  "timeline.emptyLog":
+    "No entries yet. Tap a card to log what you had at that hour.",
+  "timeline.verdictOk": "Switch On!",
+  "timeline.verdictNope": "Not for this phase",
+  "timeline.slotDone": "On plan",
+  "phase.boot.label": "Boot-Up",
+  "phase.switch.label": "Switch-On",
+  "phase.booster.label": "Booster",
+  "phase.maintain.label": "Maintain",
+  "phase.boot.summary":
+    "The ignition phase. Mostly protein shakes + 16-hour fast.",
+  "phase.switch.summary":
+    "Two shakes + one light protein meal. Low-carb, high-protein.",
+  "phase.booster.summary":
+    "One shake + two real meals. Workout intensity ramps up.",
+  "phase.maintain.summary":
+    "Three meals + optional shake. Habit formation to prevent rebound.",
+  "slot.shake.morning": "Morning protein shake",
+  "slot.shake.morning.hint": "One pack right after waking",
+  "slot.shake.midday": "Midday protein shake",
+  "slot.shake.midday.hint": "Second pack + a handful of greens",
+  "slot.shake.evening": "Evening protein shake",
+  "slot.shake.evening.hint": "Third pack of the day",
+  "slot.shake.eveningLow": "Evening protein shake",
+  "slot.shake.eveningLow.hint": "Minimal carbs, no late snacking",
+  "slot.meal.lunchProtein": "Lunch: protein + veg",
+  "slot.meal.lunchProtein.hint":
+    "Pick one: chicken breast, eggs, or tofu + leafy greens",
+  "slot.meal.breakfastProtein": "Breakfast: protein-rich meal",
+  "slot.meal.breakfastProtein.hint": "2 eggs · Greek yogurt · etc.",
+  "slot.meal.lunchNormal": "Lunch: normal meal",
+  "slot.meal.lunchNormal.hint":
+    "Palm of protein · two hands of veg · fist of carbs",
+  "slot.meal.breakfast": "Breakfast",
+  "slot.meal.breakfast.hint": "Usual meal, protein first",
+  "slot.meal.lunch": "Lunch",
+  "slot.meal.lunch.hint": "Limit processed foods · moderate carbs",
+  "slot.meal.dinner": "Dinner",
+  "slot.meal.dinner.hint": "Light protein meal · no late snacking",
+  "slot.workout.walk": "Easy 30-min walk",
+  "slot.workout.strength": "Strength 30–40 min",
+  "slot.workout.strengthCardio": "Strength 40 min + cardio 20 min",
+  "slot.workout.maintain": "Keep strength + cardio routine",
+  "slot.fast.start": "Fast starts",
+  "slot.fast.start.hint": "Water, black coffee, or unsweetened tea only",
+  "slot.fast.end": "Break fast",
+  "slot.fast.end.hint": "Ease in with a protein shake first",
+  "kind.shake": "Protein Shake",
+  "kind.meal": "Meal",
+  "kind.snack": "Snack",
+  "kind.workout": "Workout",
+  "kind.fast-start": "Fast Start",
+  "kind.fast-end": "Fast End",
+  "participants.title": "Participants",
+  "participants.subtitle": "Running this together",
+  "participants.placeholder": "Add a name",
+  "participants.add": "Add",
+  "participants.empty": "No participants yet. Add the folks joining you.",
+  "participants.remove": "Remove",
+};
+
+const DICT: Record<Lang, Msg> = { ko: KO, en: EN };
+
+export function t(lang: Lang, key: string, params?: Record<string, string | number>): string {
+  const raw = DICT[lang][key] ?? DICT.ko[key] ?? key;
+  if (!params) return raw;
+  return raw.replace(/\{(\w+)\}/g, (_m, name) =>
+    params[name] !== undefined ? String(params[name]) : `{${name}}`
+  );
+}
+
+/** English month short names, used by calendar header when lang=en. */
+export const EN_MONTHS_SHORT = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+export function formatSlotTime(lang: Lang, minuteOfDay: number): string {
+  const h = Math.floor(minuteOfDay / 60) % 24;
+  const m = minuteOfDay % 60;
+  if (lang === "en") {
+    const period = h < 12 ? "AM" : "PM";
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return `${h12}:${String(m).padStart(2, "0")} ${period}`;
+  }
+  const period = h < 12 ? "오전" : "오후";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${period} ${h12}:${String(m).padStart(2, "0")}`;
+}
