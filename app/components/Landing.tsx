@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { asset } from "@/lib/paths";
 import { useLang } from "./LangProvider";
 
 export default function Landing({ onEnter }: { onEnter: () => void }) {
@@ -29,7 +30,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
           }`}
         >
           <Image
-            src="/switch-on-season.png"
+            src={asset("/switch-on-season.png")}
             alt="Switch On Season"
             width={736}
             height={920}

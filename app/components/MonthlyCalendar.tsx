@@ -107,7 +107,7 @@ export default function MonthlyCalendar({
       : t("calendar.month", { y: cur.y, m: cur.m + 1 });
 
   return (
-    <div className="paper-card rounded-2xl p-5 print-break-inside-avoid">
+    <div className="paper-card rounded-2xl p-4 sm:p-5 print-break-inside-avoid">
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-xs font-semibold text-[var(--color-muted)] tracking-wider uppercase">

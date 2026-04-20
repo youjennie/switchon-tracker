@@ -3,13 +3,17 @@ import path from "path";
 
 const repo = "switchon-tracker";
 const isPages = process.env.GITHUB_PAGES === "1";
+const basePath = isPages ? `/${repo}` : "";
 
 const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true },
   trailingSlash: true,
-  basePath: isPages ? `/${repo}` : undefined,
-  assetPrefix: isPages ? `/${repo}/` : undefined,
+  basePath: basePath || undefined,
+  assetPrefix: basePath ? `${basePath}/` : undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   turbopack: {
     root: path.resolve(__dirname),
   },

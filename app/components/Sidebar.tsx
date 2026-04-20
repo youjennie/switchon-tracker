@@ -73,8 +73,8 @@ export default function Sidebar({
   const mm = fast ? fast.minutes % 60 : 0;
 
   return (
-    <aside className="print-stack w-full lg:w-[280px] lg:shrink-0 paper-card lg:border-r border-[var(--color-beige)] flex flex-col">
-      <div className="p-6 border-b border-[var(--color-beige)]">
+    <aside className="print-stack w-full lg:w-[280px] lg:shrink-0 paper-card lg:border-r border-b lg:border-b-0 border-[var(--color-beige)] flex flex-col">
+      <div className="p-4 lg:p-6 border-b border-[var(--color-beige)]">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-[var(--color-sage-soft)] flex items-center justify-center text-[var(--color-sage-deep)] font-semibold">
             {profile.name.slice(0, 1)}
@@ -99,31 +99,63 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="p-6 border-b border-[var(--color-beige)]">
-        <p className="text-xs font-semibold text-[var(--color-muted)] tracking-wider uppercase mb-3">
-          {t("sidebar.proteinHeader")}
-        </p>
-        <div className="relative mx-auto w-28 h-40">
-          <div className="absolute inset-x-4 top-3 bottom-0 rounded-2xl border-2 border-[var(--color-sage)] overflow-hidden bg-[var(--color-paper)]">
-            <div
-              className="absolute inset-x-0 bottom-0 bg-[var(--color-sage)] transition-all"
-              style={{ height: `${proteinPct}%` }}
-            />
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-8 h-4 rounded-t-md border-2 border-b-0 border-[var(--color-sage)] bg-[var(--color-card)]" />
-        </div>
-        <div className="mt-3 text-center">
-          <p className="text-2xl font-semibold text-[var(--color-sage-deep)]">
-            {proteinConsumed}
-            <span className="text-sm text-[var(--color-muted)] font-normal">
-              {" "}/ {profile.proteinGoalG}g
-            </span>
+      <div className="p-4 lg:p-6 border-b border-[var(--color-beige)] grid grid-cols-2 lg:block gap-4">
+        <div>
+          <p className="text-xs font-semibold text-[var(--color-muted)] tracking-wider uppercase mb-3">
+            {t("sidebar.proteinHeader")}
           </p>
+          <div className="relative mx-auto w-20 h-28 lg:w-28 lg:h-40">
+            <div className="absolute inset-x-3 lg:inset-x-4 top-3 bottom-0 rounded-2xl border-2 border-[var(--color-sage)] overflow-hidden bg-[var(--color-paper)]">
+              <div
+                className="absolute inset-x-0 bottom-0 bg-[var(--color-sage)] transition-all"
+                style={{ height: `${proteinPct}%` }}
+              />
+            </div>
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-6 lg:w-8 h-3 lg:h-4 rounded-t-md border-2 border-b-0 border-[var(--color-sage)] bg-[var(--color-card)]" />
+          </div>
+          <div className="mt-2 lg:mt-3 text-center">
+            <p className="text-xl lg:text-2xl font-bold text-[var(--color-sage-deep)]">
+              {proteinConsumed}
+              <span className="text-sm text-[var(--color-muted)] font-normal">
+                {" "}/ {profile.proteinGoalG}g
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div
+          className={`lg:hidden rounded-lg p-3 self-start ${
+            fast?.active ? "bg-[var(--color-rose)]/10" : "bg-[var(--color-bg)]"
+          }`}
+        >
+          <p className="text-[10px] font-semibold text-[var(--color-muted)] tracking-wider uppercase mb-1">
+            {fast?.active ? t("sidebar.fastActiveCaption") : t("sidebar.fastWindow")}
+          </p>
+          {fast ? (
+            <>
+              <p
+                className={`text-2xl font-bold ${
+                  fast.active ? "text-[var(--color-rose)]" : "text-[var(--color-ink)]"
+                }`}
+              >
+                {hh}h {mm}m
+              </p>
+              <p className="text-[10px] text-[var(--color-muted)] mt-0.5 leading-tight">
+                {fast.active
+                  ? t("sidebar.fastActive")
+                  : fast.startMin !== undefined
+                    ? `${t("sidebar.nextFast")} · ${formatSlotTime(lang, fast.startMin)}`
+                    : t("sidebar.nextFast")}
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-[var(--color-muted)]">{t("sidebar.noFast")}</p>
+          )}
         </div>
       </div>
 
       <div
-        className={`p-6 border-b border-[var(--color-beige)] ${
+        className={`hidden lg:block p-6 border-b border-[var(--color-beige)] ${
           fast?.active ? "bg-[var(--color-rose)]/10" : ""
         }`}
       >
@@ -154,7 +186,7 @@ export default function Sidebar({
         )}
       </div>
 
-      <div className="p-6 mt-auto no-print">
+      <div className="p-4 lg:p-6 mt-auto no-print">
         <p className="text-xs text-[var(--color-faint)] mb-2">
           {t("sidebar.startedAt")}{" "}
           {new Date(schedule.startISO).toLocaleString(

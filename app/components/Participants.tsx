@@ -64,7 +64,7 @@ export default function Participants() {
               <button
                 onClick={() => remove(p.id)}
                 aria-label={t("participants.remove")}
-                className="no-print opacity-60 hover:opacity-100 hover:text-[var(--color-rose)] w-5 h-5 rounded-full hover:bg-white/60 flex items-center justify-center transition"
+                className="no-print opacity-70 md:opacity-60 hover:opacity-100 hover:text-[var(--color-rose)] w-5 h-5 rounded-full hover:bg-white/60 flex items-center justify-center transition"
               >
                 ✕
               </button>

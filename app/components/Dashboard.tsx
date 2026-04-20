@@ -113,7 +113,7 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 onRemoveEntry={handleRemoveEntry}
               />
             </div>
-            <div className="2xl:border-l border-[var(--color-beige)] p-6 2xl:max-w-[360px] space-y-5">
+            <div className="2xl:border-l border-[var(--color-beige)] p-4 sm:p-6 2xl:max-w-[360px] space-y-5">
               <MonthlyCalendar
                 schedule={schedule}
                 currentDay={currentDay}

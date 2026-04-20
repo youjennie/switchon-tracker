@@ -65,7 +65,7 @@ export default function Timeline({
   const dayLogs = logs[plan.day] ?? {};
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="mb-6 flex items-baseline justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -87,7 +87,7 @@ export default function Timeline({
 
       <div className="relative max-w-3xl">
         <div
-          className="absolute left-[22px] top-2 bottom-2 w-0.5 bg-[var(--color-beige-warm)]"
+          className="absolute left-[18px] sm:left-[22px] top-2 bottom-2 w-0.5 bg-[var(--color-beige-warm)]"
           aria-hidden
         />
 
@@ -103,9 +103,9 @@ export default function Timeline({
             const done = canLog && isSlotDone(entries, plan.phase, slot.kind);
 
             return (
-              <li key={i} className="relative pl-14 print-break-inside-avoid">
+              <li key={i} className="relative pl-12 sm:pl-14 print-break-inside-avoid">
                 <div
-                  className={`absolute left-0 top-1.5 w-11 h-11 rounded-full flex items-center justify-center text-xl border-2 transition
+                  className={`absolute left-0 top-1.5 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-lg sm:text-xl border-2 transition
                     ${done ? "bg-[var(--color-sage)] border-[var(--color-sage-deep)] text-white" : ""}
                     ${!done && isActive ? "bg-[var(--color-sage)] border-[var(--color-sage-deep)] text-white scale-110 shadow-md" : ""}
                     ${!done && isPast && !isActive ? "bg-[var(--color-sage-soft)] border-[var(--color-sage)]" : ""}
@@ -276,7 +276,7 @@ function SlotCard({
                 )}
                 <button
                   onClick={() => onRemove(e.id)}
-                  className="opacity-0 group-hover:opacity-100 text-xs text-[var(--color-faint)] hover:text-[var(--color-rose)] transition no-print"
+                  className="md:opacity-0 md:group-hover:opacity-100 text-xs text-[var(--color-faint)] hover:text-[var(--color-rose)] transition no-print"
                   aria-label={t("timeline.removeLog")}
                 >
                   ✕
