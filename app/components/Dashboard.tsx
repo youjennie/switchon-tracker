@@ -126,14 +126,16 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
             </section>
           </div>
 
-          <aside className="w-full max-w-[720px] mx-auto xl:mx-0 xl:max-w-none xl:flex-1 xl:min-w-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4 space-y-4">
-            <MonthlyCalendar
-              schedule={schedule}
-              currentDay={currentDay}
-              selectedDay={selectedDay}
-              onSelectDay={setSelectedDay}
-            />
-            <Participants />
+          <aside className="w-full max-w-[720px] mx-auto xl:mx-0 xl:max-w-none xl:flex-1 xl:min-w-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4">
+            <div className="space-y-4 xl:max-w-[70%]">
+              <MonthlyCalendar
+                schedule={schedule}
+                currentDay={currentDay}
+                selectedDay={selectedDay}
+                onSelectDay={setSelectedDay}
+              />
+              <Participants />
+            </div>
           </aside>
         </main>
       </div>
