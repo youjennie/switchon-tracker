@@ -104,7 +104,7 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
         />
 
         <main className="flex-1 min-w-0 flex flex-col xl:flex-row xl:gap-0">
-          <div className="flex-1 min-w-0 flex flex-col">
+          <div className="w-full max-w-[720px] mx-auto xl:mx-0 xl:w-[720px] xl:max-w-none xl:shrink-0 flex flex-col">
             <DayRail
               schedule={schedule}
               currentDay={currentDay}
@@ -126,7 +126,7 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
             </section>
           </div>
 
-          <aside className="xl:w-[340px] xl:shrink-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4 space-y-4">
+          <aside className="w-full max-w-[720px] mx-auto xl:mx-0 xl:max-w-none xl:flex-1 xl:min-w-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4 space-y-4">
             <MonthlyCalendar
               schedule={schedule}
               currentDay={currentDay}
