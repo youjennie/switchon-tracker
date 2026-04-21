@@ -107,7 +107,7 @@ export default function MonthlyCalendar({
       : t("calendar.month", { y: cur.y, m: cur.m + 1 });
 
   return (
-    <div className="paper-card rounded-2xl p-4 sm:p-5 print-break-inside-avoid">
+    <div className="paper-card rounded-2xl p-3 sm:p-4 print-break-inside-avoid">
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-xs font-semibold text-[var(--color-muted)] tracking-wider uppercase">
@@ -135,7 +135,7 @@ export default function MonthlyCalendar({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5 mb-2">
+      <div className="grid grid-cols-7 gap-1 mb-1.5">
         {weekdays.map((w, i) => (
           <div
             key={i}
@@ -148,7 +148,7 @@ export default function MonthlyCalendar({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1 max-w-xl">
         {cells.map((c, idx) => {
           if (c.kind === "blank") {
             return <div key={idx} className="aspect-square" />;

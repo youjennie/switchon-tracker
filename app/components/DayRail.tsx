@@ -20,7 +20,7 @@ export default function DayRail({
   return (
     <div className="border-b border-[var(--color-beige)] paper-card no-print">
       <div className="overflow-x-auto">
-        <div className="flex gap-1.5 p-4 min-w-max">
+        <div className="flex gap-1 p-2.5 sm:p-3 min-w-max">
           {schedule.days.map((d) => {
             const isSelected = d.day === selectedDay;
             const isCurrent = d.day === currentDay;
@@ -29,7 +29,7 @@ export default function DayRail({
               <button
                 key={d.day}
                 onClick={() => onSelectDay(d.day)}
-                className={`flex flex-col items-center px-3 py-2 rounded-lg min-w-[54px] transition
+                className={`flex flex-col items-center px-2.5 py-1.5 rounded-lg min-w-[48px] transition
                   ${isSelected ? "ring-2 ring-[var(--color-sage-deep)]" : ""}
                   ${isCurrent ? "bg-[var(--color-sage)] text-white" : isPast ? "bg-[var(--color-card-muted)] text-[var(--color-muted)]" : "bg-[var(--color-paper)] text-[var(--color-ink)] hover:bg-[var(--color-sage-soft)]"}
                 `}

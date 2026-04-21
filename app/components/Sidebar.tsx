@@ -74,7 +74,7 @@ export default function Sidebar({
 
   return (
     <aside className="print-stack w-full lg:w-[280px] lg:shrink-0 paper-card lg:border-r border-b lg:border-b-0 border-[var(--color-beige)] flex flex-col">
-      <div className="p-4 lg:p-6 border-b border-[var(--color-beige)]">
+      <div className="p-3 lg:p-4 border-b border-[var(--color-beige)]">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-[var(--color-sage-soft)] flex items-center justify-center text-[var(--color-sage-deep)] font-semibold">
             {profile.name.slice(0, 1)}
@@ -99,12 +99,12 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="p-4 lg:p-6 border-b border-[var(--color-beige)] grid grid-cols-2 lg:block gap-4">
+      <div className="p-3 lg:p-4 border-b border-[var(--color-beige)] grid grid-cols-2 lg:block gap-3">
         <div>
-          <p className="text-xs font-semibold text-[var(--color-muted)] tracking-wider uppercase mb-3">
+          <p className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase mb-2">
             {t("sidebar.proteinHeader")}
           </p>
-          <div className="relative mx-auto w-20 h-28 lg:w-28 lg:h-40">
+          <div className="relative mx-auto w-16 h-24 lg:w-24 lg:h-32">
             <div className="absolute inset-x-3 lg:inset-x-4 top-3 bottom-0 rounded-2xl border-2 border-[var(--color-sage)] overflow-hidden bg-[var(--color-paper)]">
               <div
                 className="absolute inset-x-0 bottom-0 bg-[var(--color-sage)] transition-all"
@@ -155,7 +155,7 @@ export default function Sidebar({
       </div>
 
       <div
-        className={`hidden lg:block p-6 border-b border-[var(--color-beige)] ${
+        className={`hidden lg:block p-4 border-b border-[var(--color-beige)] ${
           fast?.active ? "bg-[var(--color-rose)]/10" : ""
         }`}
       >
@@ -186,7 +186,7 @@ export default function Sidebar({
         )}
       </div>
 
-      <div className="p-4 lg:p-6 mt-auto no-print">
+      <div className="p-3 lg:p-4 no-print">
         <p className="text-xs text-[var(--color-faint)] mb-2">
           {t("sidebar.startedAt")}{" "}
           {new Date(schedule.startISO).toLocaleString(

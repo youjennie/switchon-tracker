@@ -83,17 +83,6 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
 
-      <section className="p-4 sm:p-6 border-b border-[var(--color-beige)]">
-        <div className="max-w-4xl mx-auto">
-          <MonthlyCalendar
-            schedule={schedule}
-            currentDay={currentDay}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
-          />
-        </div>
-      </section>
-
       <div className="flex-1 flex flex-col lg:flex-row print-flex-col">
         <Sidebar
           profile={profile}
@@ -122,11 +111,18 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
             onRemoveEntry={handleRemoveEntry}
           />
 
-          <div className="p-4 sm:p-6 border-t border-[var(--color-beige)]">
-            <div className="max-w-3xl">
-              <Participants />
-            </div>
-          </div>
+          <section className="px-3 sm:px-5 pb-3 sm:pb-5">
+            <Participants />
+          </section>
+
+          <section className="px-3 sm:px-5 pb-3 sm:pb-5">
+            <MonthlyCalendar
+              schedule={schedule}
+              currentDay={currentDay}
+              selectedDay={selectedDay}
+              onSelectDay={setSelectedDay}
+            />
+          </section>
         </main>
       </div>
     </div>

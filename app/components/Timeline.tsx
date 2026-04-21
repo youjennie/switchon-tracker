@@ -65,25 +65,23 @@ export default function Timeline({
   const dayLogs = logs[plan.day] ?? {};
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mb-6 flex items-baseline justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-[var(--color-sage-deep)] tracking-wider uppercase">
-              {t(PHASE_LABEL_KEY[plan.phase])}
-            </span>
-            <span className="text-xs text-[var(--color-faint)]">
-              {plan.dateISO}
-            </span>
-          </div>
-          <h2 className="text-3xl font-bold text-[var(--color-ink)]">
+    <div className="p-3 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-baseline gap-2.5 flex-wrap">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)] leading-none">
             Day {plan.day}
           </h2>
-          <p className="text-sm text-[var(--color-muted)] mt-1 max-w-lg leading-relaxed">
-            {t(PHASE_SUMMARY_KEY[plan.phase])}
-          </p>
+          <span className="text-xs font-bold text-[var(--color-sage-deep)] tracking-wider uppercase">
+            {t(PHASE_LABEL_KEY[plan.phase])}
+          </span>
+          <span className="text-xs text-[var(--color-faint)]">
+            {plan.dateISO}
+          </span>
         </div>
       </div>
+      <p className="text-xs sm:text-sm text-[var(--color-muted)] mb-5 max-w-xl leading-relaxed">
+        {t(PHASE_SUMMARY_KEY[plan.phase])}
+      </p>
 
       <div className="relative max-w-3xl">
         <div
@@ -91,7 +89,7 @@ export default function Timeline({
           aria-hidden
         />
 
-        <ol className="space-y-4">
+        <ol className="space-y-2.5 sm:space-y-3">
           {slots.map((slot, i) => {
             const offset = offsetFromStart(slot.minuteOfDay);
             const isPast = isToday && nowOffset >= 0 && offset < nowOffset;

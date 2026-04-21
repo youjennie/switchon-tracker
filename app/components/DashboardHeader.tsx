@@ -5,10 +5,10 @@ import { LangToggle, useLang } from "./LangProvider";
 export default function DashboardHeader() {
   const { t } = useLang();
   return (
-    <div className="no-print flex items-center justify-between gap-2 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-[var(--color-beige)] paper-card">
+    <div className="no-print flex items-center justify-between gap-2 px-3 sm:px-5 py-2 sm:py-2.5 border-b border-[var(--color-beige)] paper-card">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-lg sm:text-2xl font-bold text-[var(--color-ink)] truncate">
-          Switch On Season
+        <span className="text-lg sm:text-xl font-bold text-[var(--color-ink)] truncate">
+          💌 Switch On Season
         </span>
         <span className="text-xs text-[var(--color-faint)] tracking-widest uppercase hidden lg:inline shrink-0">
           28 day tracker
