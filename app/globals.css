@@ -38,6 +38,10 @@
   --font-sans: var(--font-nanum);
 }
 
+html {
+  font-size: 80%;
+}
+
 html,
 body,
 input,
@@ -51,6 +55,15 @@ html,
 body {
   background: var(--bg-base);
   color: var(--ink);
+}
+
+/* Keep iOS from auto-zooming inputs when root is scaled below 16px. */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: max(1em, 16px);
+  }
 }
 
 .font-hand {

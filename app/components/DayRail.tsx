@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { PHASE_LABEL_KEY, type Schedule } from "@/lib/schedule";
 import { useLang } from "./LangProvider";
 
@@ -17,9 +18,31 @@ export default function DayRail({
   onSelectDay,
 }: Props) {
   const { t } = useLang();
+  const selectedRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({
+      block: "nearest",
+      inline: "center",
+      behavior: "smooth",
+    });
+  }, [selectedDay]);
+
+  const atStart = selectedDay <= 1;
+  const atEnd = selectedDay >= schedule.days.length;
+
   return (
-    <div className="border-b border-[var(--color-beige)] paper-card no-print">
-      <div className="overflow-x-auto max-w-[720px]">
+    <div className="border-b border-[var(--color-beige)] paper-card no-print flex items-stretch">
+      <button
+        onClick={() => !atStart && onSelectDay(selectedDay - 1)}
+        disabled={atStart}
+        aria-label="previous day"
+        className="shrink-0 w-9 flex items-center justify-center text-lg text-[var(--color-muted)] hover:text-[var(--color-sage-deep)] hover:bg-[var(--color-sage-soft)] disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent transition border-r border-[var(--color-beige)]"
+      >
+        ‹
+      </button>
+
+      <div className="overflow-x-auto max-w-[720px] flex-1">
         <div className="flex gap-1 p-2.5 sm:p-3 min-w-max">
           {schedule.days.map((d) => {
             const isSelected = d.day === selectedDay;
@@ -28,6 +51,7 @@ export default function DayRail({
             return (
               <button
                 key={d.day}
+                ref={isSelected ? selectedRef : null}
                 onClick={() => onSelectDay(d.day)}
                 className={`flex flex-col items-center px-2 py-1.5 rounded-lg min-w-[40px] transition
                   ${isSelected ? "ring-2 ring-[var(--color-sage-deep)]" : ""}
@@ -48,6 +72,15 @@ export default function DayRail({
           })}
         </div>
       </div>
+
+      <button
+        onClick={() => !atEnd && onSelectDay(selectedDay + 1)}
+        disabled={atEnd}
+        aria-label="next day"
+        className="shrink-0 w-9 flex items-center justify-center text-lg text-[var(--color-muted)] hover:text-[var(--color-sage-deep)] hover:bg-[var(--color-sage-soft)] disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent transition border-l border-[var(--color-beige)]"
+      >
+        ›
+      </button>
     </div>
   );
 }
