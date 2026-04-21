@@ -19,7 +19,7 @@ export default function DayRail({
   const { t } = useLang();
   return (
     <div className="border-b border-[var(--color-beige)] paper-card no-print">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-w-[720px]">
         <div className="flex gap-1 p-2.5 sm:p-3 min-w-max">
           {schedule.days.map((d) => {
             const isSelected = d.day === selectedDay;
@@ -29,18 +29,18 @@ export default function DayRail({
               <button
                 key={d.day}
                 onClick={() => onSelectDay(d.day)}
-                className={`flex flex-col items-center px-2.5 py-1.5 rounded-lg min-w-[48px] transition
+                className={`flex flex-col items-center px-2 py-1.5 rounded-lg min-w-[40px] transition
                   ${isSelected ? "ring-2 ring-[var(--color-sage-deep)]" : ""}
                   ${isCurrent ? "bg-[var(--color-sage)] text-white" : isPast ? "bg-[var(--color-card-muted)] text-[var(--color-muted)]" : "bg-[var(--color-paper)] text-[var(--color-ink)] hover:bg-[var(--color-sage-soft)]"}
                 `}
               >
-                <span className="text-[10px] font-semibold opacity-80 leading-none">
+                <span className="text-[9px] font-bold opacity-80 leading-none">
                   {t("dayRail.letter")}
                 </span>
-                <span className="text-lg font-semibold leading-tight">
+                <span className="text-base font-bold leading-tight">
                   {d.day}
                 </span>
-                <span className="text-[9px] opacity-70 mt-0.5">
+                <span className="text-[8px] opacity-70 mt-0.5 whitespace-nowrap">
                   {t(PHASE_LABEL_KEY[d.phase])}
                 </span>
               </button>

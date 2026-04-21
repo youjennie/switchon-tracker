@@ -9,6 +9,7 @@ import {
 import {
   addLogEntry,
   clearProgram,
+  extractGramsTotal,
   loadLogs,
   removeLogEntry,
   saveLogs,
@@ -22,6 +23,7 @@ import DayRail from "./DayRail";
 import Timeline from "./Timeline";
 import Participants from "./Participants";
 import DashboardHeader from "./DashboardHeader";
+import DayJournalCard from "./DayJournal";
 
 type Props = {
   schedule: Schedule;
@@ -76,8 +78,15 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     saveLogs(next);
   }
 
-  // proteinConsumed — placeholder; Phase 2 will compute from logs.
-  const proteinConsumed = 0;
+  const proteinConsumed = useMemo(() => {
+    if (!currentDay) return 0;
+    const dayLogs = logs[currentDay] ?? {};
+    let total = 0;
+    for (const entries of Object.values(dayLogs)) {
+      for (const e of entries) total += extractGramsTotal(e.text);
+    }
+    return Math.round(total);
+  }, [logs, currentDay]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -94,35 +103,38 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
           proteinConsumed={proteinConsumed}
         />
 
-        <main className="flex-1 min-w-0 flex flex-col">
-          <DayRail
-            schedule={schedule}
-            currentDay={currentDay}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
-          />
+        <main className="flex-1 min-w-0 flex flex-col xl:flex-row xl:gap-0">
+          <div className="flex-1 min-w-0 flex flex-col">
+            <DayRail
+              schedule={schedule}
+              currentDay={currentDay}
+              selectedDay={selectedDay}
+              onSelectDay={setSelectedDay}
+            />
 
-          <Timeline
-            plan={selectedPlan}
-            isToday={selectedDay === currentDay}
-            nowMinutes={nowMinutes}
-            logs={logs}
-            onAddEntry={handleAddEntry}
-            onRemoveEntry={handleRemoveEntry}
-          />
+            <Timeline
+              plan={selectedPlan}
+              isToday={selectedDay === currentDay}
+              nowMinutes={nowMinutes}
+              logs={logs}
+              onAddEntry={handleAddEntry}
+              onRemoveEntry={handleRemoveEntry}
+            />
 
-          <section className="px-3 sm:px-5 pb-3 sm:pb-5">
-            <Participants />
-          </section>
+            <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">
+              <DayJournalCard day={selectedDay} />
+            </section>
+          </div>
 
-          <section className="px-3 sm:px-5 pb-3 sm:pb-5">
+          <aside className="xl:w-[340px] xl:shrink-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4 space-y-4">
             <MonthlyCalendar
               schedule={schedule}
               currentDay={currentDay}
               selectedDay={selectedDay}
               onSelectDay={setSelectedDay}
             />
-          </section>
+            <Participants />
+          </aside>
         </main>
       </div>
     </div>

@@ -7,6 +7,7 @@ const KEY_PROFILE = "switchon.profile.v2";
 const KEY_LOGS = "switchon.logs.v2";
 const KEY_PARTICIPANTS = "switchon.participants.v1";
 const KEY_ROOM_ID = "switchon.roomId.v1";
+const KEY_JOURNALS = "switchon.journals.v1";
 
 export type UserProfile = {
   name: string;
@@ -20,6 +21,13 @@ export type DayLogs = Record<string, FoodEntry[]>; // key = slotIndex as string
 export type AllLogs = Record<number, DayLogs>; // key = day number 1..28
 
 export type Participant = { id: string; name: string };
+
+export type DayJournal = {
+  mood?: string;
+  exercise?: string;
+  note?: string;
+};
+export type AllJournals = Record<number, DayJournal>;
 
 function safeGet<T>(key: string): T | null {
   if (typeof window === "undefined") return null;
@@ -100,6 +108,32 @@ export const loadParticipants = (): Participant[] =>
   safeGet<Participant[]>(KEY_PARTICIPANTS) ?? [];
 export const saveParticipants = (p: Participant[]) =>
   safeSet(KEY_PARTICIPANTS, p);
+
+// --- Journals (mood + exercise + note per day) ---
+export const loadJournals = (): AllJournals =>
+  safeGet<AllJournals>(KEY_JOURNALS) ?? {};
+export const saveJournals = (j: AllJournals) => safeSet(KEY_JOURNALS, j);
+
+export function setDayJournal(
+  journals: AllJournals,
+  day: number,
+  patch: Partial<DayJournal>
+): AllJournals {
+  const current = journals[day] ?? {};
+  const merged: DayJournal = { ...current, ...patch };
+  return { ...journals, [day]: merged };
+}
+
+/** Sum all "<number>g" occurrences in a string (e.g., "계란 2개 14g + 닭가슴살 100g" → 114). */
+export function extractGramsTotal(text: string): number {
+  const re = /(\d+(?:\.\d+)?)\s*g\b/gi;
+  let sum = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    sum += parseFloat(m[1]);
+  }
+  return sum;
+}
 
 /** Return a stable per-browser room id (used in the shareable invite link). */
 export function getOrCreateRoomId(): string {

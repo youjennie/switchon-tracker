@@ -79,8 +79,11 @@ export default function Timeline({
           </span>
         </div>
       </div>
-      <p className="text-xs sm:text-sm text-[var(--color-muted)] mb-5 max-w-xl leading-relaxed">
+      <p className="text-xs sm:text-sm text-[var(--color-muted)] mb-2 max-w-xl leading-relaxed">
         {t(PHASE_SUMMARY_KEY[plan.phase])}
+      </p>
+      <p className="text-[11px] text-[var(--color-faint)] mb-4 italic">
+        💡 {t("timeline.proteinHint")}
       </p>
 
       <div className="relative max-w-3xl">
