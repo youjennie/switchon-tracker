@@ -6,6 +6,7 @@ const KEY_SCHEDULE = "switchon.schedule.v2";
 const KEY_PROFILE = "switchon.profile.v2";
 const KEY_LOGS = "switchon.logs.v2";
 const KEY_PARTICIPANTS = "switchon.participants.v1";
+const KEY_ROOM_ID = "switchon.roomId.v1";
 
 export type UserProfile = {
   name: string;
@@ -99,6 +100,17 @@ export const loadParticipants = (): Participant[] =>
   safeGet<Participant[]>(KEY_PARTICIPANTS) ?? [];
 export const saveParticipants = (p: Participant[]) =>
   safeSet(KEY_PARTICIPANTS, p);
+
+/** Return a stable per-browser room id (used in the shareable invite link). */
+export function getOrCreateRoomId(): string {
+  if (typeof window === "undefined") return "";
+  let id = window.localStorage.getItem(KEY_ROOM_ID);
+  if (!id) {
+    id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4);
+    window.localStorage.setItem(KEY_ROOM_ID, id);
+  }
+  return id;
+}
 
 export function recommendedProteinG(weightKg: number): number {
   return Math.round(weightKg * 1.5);

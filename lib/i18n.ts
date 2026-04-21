@@ -128,6 +128,10 @@ const KO: Msg = {
   "participants.add": "추가",
   "participants.empty": "아직 참여자가 없어요. 함께하는 분의 이름을 남겨보세요.",
   "participants.remove": "삭제",
+  "participants.inviteHeader": "함께하자고 초대하기",
+  "participants.inviteMessage": "Let's do switchon together! 👉 {url}",
+  "participants.copy": "복사",
+  "participants.copied": "복사됨!",
 };
 
 const EN: Msg = {
@@ -254,6 +258,10 @@ const EN: Msg = {
   "participants.add": "Add",
   "participants.empty": "No participants yet. Add the folks joining you.",
   "participants.remove": "Remove",
+  "participants.inviteHeader": "Invite others",
+  "participants.inviteMessage": "Let's do switchon together! 👉 {url}",
+  "participants.copy": "Copy",
+  "participants.copied": "Copied!",
 };
 
 const DICT: Record<Lang, Msg> = { ko: KO, en: EN };
