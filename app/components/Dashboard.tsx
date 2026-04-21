@@ -103,31 +103,33 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
           proteinConsumed={proteinConsumed}
         />
 
-        <main className="flex-1 min-w-0 flex flex-col xl:flex-row xl:gap-0">
-          <div className="w-full max-w-[720px] mx-auto xl:mx-0 xl:w-[720px] xl:max-w-none xl:shrink-0 flex flex-col">
-            <DayRail
-              schedule={schedule}
-              currentDay={currentDay}
-              selectedDay={selectedDay}
-              onSelectDay={setSelectedDay}
-            />
+        <main className="flex-1 xl:flex-[7] xl:basis-0 min-w-0 flex flex-col xl:flex-row xl:gap-0">
+          <div className="xl:flex-[5] xl:basis-0 xl:min-w-0 flex flex-col xl:items-center">
+            <div className="w-full max-w-[720px] mx-auto xl:mx-0 flex flex-col flex-1">
+              <DayRail
+                schedule={schedule}
+                currentDay={currentDay}
+                selectedDay={selectedDay}
+                onSelectDay={setSelectedDay}
+              />
 
-            <Timeline
-              plan={selectedPlan}
-              isToday={selectedDay === currentDay}
-              nowMinutes={nowMinutes}
-              logs={logs}
-              onAddEntry={handleAddEntry}
-              onRemoveEntry={handleRemoveEntry}
-            />
+              <Timeline
+                plan={selectedPlan}
+                isToday={selectedDay === currentDay}
+                nowMinutes={nowMinutes}
+                logs={logs}
+                onAddEntry={handleAddEntry}
+                onRemoveEntry={handleRemoveEntry}
+              />
 
-            <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">
-              <DayJournalCard day={selectedDay} />
-            </section>
+              <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">
+                <DayJournalCard day={selectedDay} />
+              </section>
+            </div>
           </div>
 
-          <aside className="w-full max-w-[720px] mx-auto xl:mx-0 xl:max-w-none xl:flex-1 xl:min-w-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4">
-            <div className="space-y-4 xl:max-w-[70%]">
+          <aside className="xl:flex-[2] xl:basis-0 xl:min-w-0 xl:border-l border-t xl:border-t-0 border-[var(--color-beige)] p-3 sm:p-4 flex justify-center">
+            <div className="w-full max-w-[340px] space-y-4">
               <MonthlyCalendar
                 schedule={schedule}
                 currentDay={currentDay}

@@ -73,8 +73,8 @@ export default function Sidebar({
   const mm = fast ? fast.minutes % 60 : 0;
 
   return (
-    <aside className="print-stack w-full lg:w-[280px] lg:shrink-0 paper-card lg:border-r border-b lg:border-b-0 border-[var(--color-beige)] flex flex-col">
-      <div className="p-3 lg:p-4 border-b border-[var(--color-beige)]">
+    <aside className="print-stack w-full lg:w-[280px] lg:shrink-0 xl:w-auto xl:flex-[3] xl:basis-0 xl:shrink paper-card lg:border-r border-b lg:border-b-0 border-[var(--color-beige)] flex flex-col xl:items-center">
+      <div className="w-full xl:max-w-[280px] p-3 lg:p-4 border-b border-[var(--color-beige)]">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-[var(--color-sage-soft)] flex items-center justify-center text-[var(--color-sage-deep)] font-semibold">
             {profile.name.slice(0, 1)}
@@ -99,7 +99,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="p-3 lg:p-4 border-b border-[var(--color-beige)] grid grid-cols-2 lg:block gap-3">
+      <div className="w-full xl:max-w-[280px] p-3 lg:p-4 border-b border-[var(--color-beige)] grid grid-cols-2 lg:block gap-3">
         <div>
           <p className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase mb-2">
             {t("sidebar.proteinHeader")}
@@ -155,7 +155,7 @@ export default function Sidebar({
       </div>
 
       <div
-        className={`hidden lg:block p-4 border-b border-[var(--color-beige)] ${
+        className={`hidden lg:block w-full xl:max-w-[280px] p-4 border-b border-[var(--color-beige)] ${
           fast?.active ? "bg-[var(--color-rose)]/10" : ""
         }`}
       >
@@ -186,7 +186,7 @@ export default function Sidebar({
         )}
       </div>
 
-      <div className="p-3 lg:p-4 no-print">
+      <div className="w-full xl:max-w-[280px] p-3 lg:p-4 no-print">
         <p className="text-xs text-[var(--color-faint)] mb-2">
           {t("sidebar.startedAt")}{" "}
           {new Date(schedule.startISO).toLocaleString(
