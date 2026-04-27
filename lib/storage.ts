@@ -8,6 +8,7 @@ const KEY_LOGS = "switchon.logs.v2";
 const KEY_PARTICIPANTS = "switchon.participants.v1";
 const KEY_ROOM_ID = "switchon.roomId.v1";
 const KEY_JOURNALS = "switchon.journals.v1";
+const KEY_SLOT_OVERRIDES = "switchon.slotOverrides.v1";
 
 export type UserProfile = {
   name: string;
@@ -28,6 +29,9 @@ export type DayJournal = {
   note?: string;
 };
 export type AllJournals = Record<number, DayJournal>;
+
+/** Per-day, per-slot time override (minute-of-day). */
+export type SlotOverrides = Record<number, Record<string, { minuteOfDay: number }>>;
 
 function safeGet<T>(key: string): T | null {
   if (typeof window === "undefined") return null;
@@ -122,6 +126,35 @@ export function setDayJournal(
   const current = journals[day] ?? {};
   const merged: DayJournal = { ...current, ...patch };
   return { ...journals, [day]: merged };
+}
+
+// --- Slot time overrides (e.g., move a workout to a different hour for a given day) ---
+export const loadSlotOverrides = (): SlotOverrides =>
+  safeGet<SlotOverrides>(KEY_SLOT_OVERRIDES) ?? {};
+export const saveSlotOverrides = (s: SlotOverrides) =>
+  safeSet(KEY_SLOT_OVERRIDES, s);
+
+export function setSlotTimeOverride(
+  overrides: SlotOverrides,
+  day: number,
+  slotIndex: number,
+  minuteOfDay: number
+): SlotOverrides {
+  const dayMap = { ...(overrides[day] ?? {}) };
+  dayMap[String(slotIndex)] = { minuteOfDay };
+  return { ...overrides, [day]: dayMap };
+}
+
+export function clearSlotTimeOverride(
+  overrides: SlotOverrides,
+  day: number,
+  slotIndex: number
+): SlotOverrides {
+  const dayMap = overrides[day];
+  if (!dayMap) return overrides;
+  const next = { ...dayMap };
+  delete next[String(slotIndex)];
+  return { ...overrides, [day]: next };
 }
 
 /** Sum all "<number>g" occurrences in a string (e.g., "계란 2개 14g + 닭가슴살 100g" → 114). */

@@ -5,6 +5,7 @@ import {
   PHASE_LABEL_KEY,
   PHASE_SUMMARY_KEY,
   type DayPlan,
+  type DaySlot,
   type SlotKind,
 } from "@/lib/schedule";
 import { formatSlotTime } from "@/lib/i18n";
@@ -17,8 +18,11 @@ type Props = {
   isToday: boolean;
   nowMinutes: number;
   logs: AllLogs;
+  /** Per-slot time overrides for this day, keyed by slotIndex string. */
+  overrides?: Record<string, { minuteOfDay: number }>;
   onAddEntry: (day: number, slotIndex: number, text: string) => void;
   onRemoveEntry: (day: number, slotIndex: number, entryId: string) => void;
+  onSetSlotTime: (day: number, slotIndex: number, minuteOfDay: number) => void;
 };
 
 const KIND_META: Record<SlotKind, { icon: string }> = {
@@ -35,11 +39,19 @@ export default function Timeline({
   isToday,
   nowMinutes,
   logs,
+  overrides,
   onAddEntry,
   onRemoveEntry,
+  onSetSlotTime,
 }: Props) {
   const { t, lang } = useLang();
-  const slots = plan.slots;
+
+  // Apply per-slot overrides (e.g., workout time moved to a different hour).
+  const slots: DaySlot[] = plan.slots.map((s, i) => {
+    const ov = overrides?.[String(i)];
+    return ov ? { ...s, minuteOfDay: ov.minuteOfDay } : s;
+  });
+
   const firstMin = slots[0]?.minuteOfDay ?? 0;
   const SPAN = 24 * 60;
 
@@ -102,6 +114,7 @@ export default function Timeline({
             const canLog =
               slot.kind !== "fast-start" && slot.kind !== "fast-end";
             const done = canLog && isSlotDone(entries, plan.phase, slot.kind);
+            const canEditTime = slot.kind === "workout";
 
             return (
               <li key={i} className="relative pl-12 sm:pl-14 print-break-inside-avoid">
@@ -131,9 +144,11 @@ export default function Timeline({
                   lang={lang}
                   t={t}
                   canLog={canLog}
+                  canEditTime={canEditTime}
                   entries={entries}
                   onAdd={(text) => onAddEntry(plan.day, i, text)}
                   onRemove={(id) => onRemoveEntry(plan.day, i, id)}
+                  onSetTime={(minute) => onSetSlotTime(plan.day, i, minute)}
                 />
               </li>
             );
@@ -142,6 +157,21 @@ export default function Timeline({
       </div>
     </div>
   );
+}
+
+function minutesToHHMM(min: number): string {
+  const h = Math.floor(min / 60) % 24;
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function hhmmToMinutes(hhmm: string): number | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm);
+  if (!m) return null;
+  const h = Number(m[1]);
+  const mm = Number(m[2]);
+  if (h < 0 || h > 23 || mm < 0 || mm > 59) return null;
+  return h * 60 + mm;
 }
 
 function SlotCard({
@@ -153,11 +183,13 @@ function SlotCard({
   lang,
   t,
   canLog,
+  canEditTime,
   entries,
   onAdd,
   onRemove,
+  onSetTime,
 }: {
-  slot: DayPlan["slots"][number];
+  slot: DaySlot;
   phase: DayPlan["phase"];
   isActive: boolean;
   isPast: boolean;
@@ -165,25 +197,40 @@ function SlotCard({
   lang: "ko" | "en";
   t: (k: string, p?: Record<string, string | number>) => string;
   canLog: boolean;
+  canEditTime: boolean;
   entries: FoodEntry[];
   onAdd: (text: string) => void;
   onRemove: (id: string) => void;
+  onSetTime: (minuteOfDay: number) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState("");
   const [shake, setShake] = useState(false);
+  const [editingTime, setEditingTime] = useState(false);
+  const [timeDraft, setTimeDraft] = useState(() =>
+    minutesToHHMM(slot.minuteOfDay)
+  );
 
   function submit() {
     const v = value.trim();
     if (!v) return;
     onAdd(v);
-    // briefly shake if the new entry is forbidden for this phase
     if (validateEntry(v, phase) === "nope") {
       setShake(true);
       setTimeout(() => setShake(false), 450);
     }
     setValue("");
     setEditing(false);
+  }
+
+  function commitTime() {
+    const m = hhmmToMinutes(timeDraft);
+    if (m == null) {
+      setTimeDraft(minutesToHHMM(slot.minuteOfDay));
+    } else {
+      onSetTime(m);
+    }
+    setEditingTime(false);
   }
 
   const timeLabel = formatSlotTime(lang, slot.minuteOfDay);
@@ -197,23 +244,85 @@ function SlotCard({
         ${isPast && !isActive && !done ? "opacity-80" : ""}
       `}
     >
-      <button
-        type="button"
-        onClick={() => canLog && setEditing((v) => !v)}
-        className={`w-full text-left px-4 py-3 ${canLog ? "cursor-pointer" : "cursor-default"}`}
+      <div
+        className={`w-full text-left px-4 py-3 ${canLog ? "cursor-pointer" : ""}`}
+        onClick={(e) => {
+          // Only toggle the food log editor when clicking outside of the
+          // time-edit affordance.
+          if (!canLog) return;
+          if ((e.target as HTMLElement).closest("[data-time-edit]")) return;
+          setEditing((v) => !v);
+        }}
       >
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-              <span
-                className={`text-lg font-bold ${
-                  isActive || done
-                    ? "text-[var(--color-sage-deep)]"
-                    : "text-[var(--color-ink-soft)]"
-                }`}
-              >
-                {timeLabel}
-              </span>
+              {editingTime ? (
+                <span data-time-edit className="inline-flex items-center gap-1 no-print">
+                  <input
+                    type="time"
+                    value={timeDraft}
+                    onChange={(e) => setTimeDraft(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        commitTime();
+                      }
+                      if (e.key === "Escape") {
+                        setTimeDraft(minutesToHHMM(slot.minuteOfDay));
+                        setEditingTime(false);
+                      }
+                    }}
+                    autoFocus
+                    className="px-2 py-1 rounded-md border border-[var(--color-sage)] bg-[var(--color-paper)] text-base font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-[var(--color-sage-soft)]"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      commitTime();
+                    }}
+                    className="px-2 py-1 rounded-md bg-[var(--color-sage)] text-white text-xs font-bold"
+                  >
+                    {t("timeline.save")}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTimeDraft(minutesToHHMM(slot.minuteOfDay));
+                      setEditingTime(false);
+                    }}
+                    className="px-2 py-1 rounded-md text-[var(--color-muted)] text-xs"
+                  >
+                    {t("timeline.cancel")}
+                  </button>
+                </span>
+              ) : (
+                <span
+                  className={`text-lg font-bold ${
+                    isActive || done
+                      ? "text-[var(--color-sage-deep)]"
+                      : "text-[var(--color-ink-soft)]"
+                  }`}
+                >
+                  {timeLabel}
+                </span>
+              )}
+              {canEditTime && !editingTime && (
+                <button
+                  data-time-edit
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTimeDraft(minutesToHHMM(slot.minuteOfDay));
+                    setEditingTime(true);
+                  }}
+                  className="text-[var(--color-faint)] hover:text-[var(--color-sage-deep)] text-xs no-print"
+                  aria-label={t("timeline.editTime")}
+                  title={t("timeline.editTime")}
+                >
+                  ✏️
+                </button>
+              )}
               {done && (
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--color-sage-deep)] text-white text-[10px] font-bold tracking-wide">
                   ✓ {t("timeline.slotDone")}
@@ -238,7 +347,7 @@ function SlotCard({
             )}
           </div>
         </div>
-      </button>
+      </div>
 
       {entries.length > 0 && (
         <ul

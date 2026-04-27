@@ -11,9 +11,13 @@ import {
   clearProgram,
   extractGramsTotal,
   loadLogs,
+  loadSlotOverrides,
   removeLogEntry,
   saveLogs,
+  saveSlotOverrides,
+  setSlotTimeOverride,
   type AllLogs,
+  type SlotOverrides,
   type UserProfile,
 } from "@/lib/storage";
 import { useLang } from "./LangProvider";
@@ -24,6 +28,7 @@ import Timeline from "./Timeline";
 import Participants from "./Participants";
 import DashboardHeader from "./DashboardHeader";
 import DayJournalCard from "./DayJournal";
+import FastTimer from "./FastTimer";
 
 type Props = {
   schedule: Schedule;
@@ -35,9 +40,11 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
   const { t } = useLang();
   const [now, setNow] = useState<Date>(() => new Date());
   const [logs, setLogs] = useState<AllLogs>({});
+  const [overrides, setOverrides] = useState<SlotOverrides>({});
 
   useEffect(() => {
     setLogs(loadLogs());
+    setOverrides(loadSlotOverrides());
   }, []);
 
   useEffect(() => {
@@ -76,6 +83,12 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     const next = removeLogEntry(logs, day, slotIndex, entryId);
     setLogs(next);
     saveLogs(next);
+  }
+
+  function handleSetSlotTime(day: number, slotIndex: number, minute: number) {
+    const next = setSlotTimeOverride(overrides, day, slotIndex, minute);
+    setOverrides(next);
+    saveSlotOverrides(next);
   }
 
   const proteinConsumed = useMemo(() => {
@@ -118,8 +131,10 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 isToday={selectedDay === currentDay}
                 nowMinutes={nowMinutes}
                 logs={logs}
+                overrides={overrides[selectedDay]}
                 onAddEntry={handleAddEntry}
                 onRemoveEntry={handleRemoveEntry}
+                onSetSlotTime={handleSetSlotTime}
               />
 
               <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">
@@ -136,6 +151,7 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 selectedDay={selectedDay}
                 onSelectDay={setSelectedDay}
               />
+              <FastTimer />
               <Participants />
             </div>
           </aside>
