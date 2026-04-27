@@ -12,11 +12,12 @@ import {
   extractGramsTotal,
   loadLogs,
   loadSlotOverrides,
+  patchSlotOverride,
   removeLogEntry,
   saveLogs,
   saveSlotOverrides,
-  setSlotTimeOverride,
   type AllLogs,
+  type SlotOverride,
   type SlotOverrides,
   type UserProfile,
 } from "@/lib/storage";
@@ -85,8 +86,12 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     saveLogs(next);
   }
 
-  function handleSetSlotTime(day: number, slotIndex: number, minute: number) {
-    const next = setSlotTimeOverride(overrides, day, slotIndex, minute);
+  function handlePatchSlot(
+    day: number,
+    slotIndex: number,
+    patch: Partial<SlotOverride>
+  ) {
+    const next = patchSlotOverride(overrides, day, slotIndex, patch);
     setOverrides(next);
     saveSlotOverrides(next);
   }
@@ -134,7 +139,7 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 overrides={overrides[selectedDay]}
                 onAddEntry={handleAddEntry}
                 onRemoveEntry={handleRemoveEntry}
-                onSetSlotTime={handleSetSlotTime}
+                onPatchSlot={handlePatchSlot}
               />
 
               <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">

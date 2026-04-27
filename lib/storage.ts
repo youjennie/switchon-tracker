@@ -30,8 +30,10 @@ export type DayJournal = {
 };
 export type AllJournals = Record<number, DayJournal>;
 
-/** Per-day, per-slot time override (minute-of-day). */
-export type SlotOverrides = Record<number, Record<string, { minuteOfDay: number }>>;
+/** Per-day, per-slot override. Both fields optional — only the ones the
+ *  user changed are stored. */
+export type SlotOverride = { minuteOfDay?: number; label?: string };
+export type SlotOverrides = Record<number, Record<string, SlotOverride>>;
 
 function safeGet<T>(key: string): T | null {
   if (typeof window === "undefined") return null;
@@ -134,15 +136,38 @@ export const loadSlotOverrides = (): SlotOverrides =>
 export const saveSlotOverrides = (s: SlotOverrides) =>
   safeSet(KEY_SLOT_OVERRIDES, s);
 
+export function patchSlotOverride(
+  overrides: SlotOverrides,
+  day: number,
+  slotIndex: number,
+  patch: Partial<SlotOverride>
+): SlotOverrides {
+  const dayMap = { ...(overrides[day] ?? {}) };
+  const key = String(slotIndex);
+  const cur = dayMap[key] ?? {};
+  const next: SlotOverride = { ...cur };
+  if ("minuteOfDay" in patch) next.minuteOfDay = patch.minuteOfDay;
+  if ("label" in patch) {
+    const trimmed = patch.label?.trim();
+    if (trimmed) next.label = trimmed;
+    else delete next.label;
+  }
+  // If both fields ended up empty, drop the entry entirely.
+  if (next.minuteOfDay == null && !next.label) {
+    delete dayMap[key];
+  } else {
+    dayMap[key] = next;
+  }
+  return { ...overrides, [day]: dayMap };
+}
+
 export function setSlotTimeOverride(
   overrides: SlotOverrides,
   day: number,
   slotIndex: number,
   minuteOfDay: number
 ): SlotOverrides {
-  const dayMap = { ...(overrides[day] ?? {}) };
-  dayMap[String(slotIndex)] = { minuteOfDay };
-  return { ...overrides, [day]: dayMap };
+  return patchSlotOverride(overrides, day, slotIndex, { minuteOfDay });
 }
 
 export function clearSlotTimeOverride(
