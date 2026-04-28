@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { PHASE_LABEL_KEY, type Schedule } from "@/lib/schedule";
+import { dayPercent } from "@/lib/progress";
+import type { AllLogs, SlotCompletions } from "@/lib/storage";
 import { useLang } from "./LangProvider";
 
 type Props = {
@@ -9,6 +11,8 @@ type Props = {
   currentDay: number | null;
   selectedDay: number;
   onSelectDay: (day: number) => void;
+  logs: AllLogs;
+  completions: SlotCompletions;
 };
 
 export default function DayRail({
@@ -16,6 +20,8 @@ export default function DayRail({
   currentDay,
   selectedDay,
   onSelectDay,
+  logs,
+  completions,
 }: Props) {
   const { t } = useLang();
   const selectedRef = useRef<HTMLButtonElement>(null);
@@ -48,15 +54,17 @@ export default function DayRail({
             const isSelected = d.day === selectedDay;
             const isCurrent = d.day === currentDay;
             const isPast = currentDay !== null && d.day < currentDay;
+            const pct = dayPercent(d, logs, completions);
             return (
               <button
                 key={d.day}
                 ref={isSelected ? selectedRef : null}
                 onClick={() => onSelectDay(d.day)}
-                className={`flex flex-col items-center px-2 py-1.5 rounded-lg min-w-[40px] transition
+                className={`relative flex flex-col items-center px-2 pt-1.5 pb-2 rounded-lg min-w-[40px] transition overflow-hidden
                   ${isSelected ? "ring-2 ring-[var(--color-sage-deep)]" : ""}
                   ${isCurrent ? "bg-[var(--color-sage)] text-white" : isPast ? "bg-[var(--color-card-muted)] text-[var(--color-muted)]" : "bg-[var(--color-paper)] text-[var(--color-ink)] hover:bg-[var(--color-sage-soft)]"}
                 `}
+                title={`Day ${d.day} · ${pct}%`}
               >
                 <span className="text-[9px] font-bold opacity-80 leading-none">
                   {t("dayRail.letter")}
@@ -67,6 +75,13 @@ export default function DayRail({
                 <span className="text-[8px] opacity-70 mt-0.5 whitespace-nowrap">
                   {t(PHASE_LABEL_KEY[d.phase])}
                 </span>
+                <span
+                  className={`absolute left-0 bottom-0 h-1 transition-all
+                    ${isCurrent ? "bg-white/70" : "bg-[var(--color-sage-deep)]"}
+                  `}
+                  style={{ width: `${pct}%` }}
+                  aria-hidden
+                />
               </button>
             );
           })}

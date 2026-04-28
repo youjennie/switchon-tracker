@@ -9,6 +9,7 @@ const KEY_PARTICIPANTS = "switchon.participants.v1";
 const KEY_ROOM_ID = "switchon.roomId.v1";
 const KEY_JOURNALS = "switchon.journals.v1";
 const KEY_SLOT_OVERRIDES = "switchon.slotOverrides.v1";
+const KEY_SLOT_COMPLETIONS = "switchon.slotCompletions.v1";
 
 export type UserProfile = {
   name: string;
@@ -34,6 +35,9 @@ export type AllJournals = Record<number, DayJournal>;
  *  user changed are stored. */
 export type SlotOverride = { minuteOfDay?: number; label?: string };
 export type SlotOverrides = Record<number, Record<string, SlotOverride>>;
+
+/** Per-day, per-slot manual completion override (true=done, false=undone). */
+export type SlotCompletions = Record<number, Record<string, boolean>>;
 
 function safeGet<T>(key: string): T | null {
   if (typeof window === "undefined") return null;
@@ -168,6 +172,23 @@ export function setSlotTimeOverride(
   minuteOfDay: number
 ): SlotOverrides {
   return patchSlotOverride(overrides, day, slotIndex, { minuteOfDay });
+}
+
+// --- Slot manual completion ---
+export const loadSlotCompletions = (): SlotCompletions =>
+  safeGet<SlotCompletions>(KEY_SLOT_COMPLETIONS) ?? {};
+export const saveSlotCompletions = (s: SlotCompletions) =>
+  safeSet(KEY_SLOT_COMPLETIONS, s);
+
+export function setSlotCompletion(
+  completions: SlotCompletions,
+  day: number,
+  slotIndex: number,
+  done: boolean
+): SlotCompletions {
+  const dayMap = { ...(completions[day] ?? {}) };
+  dayMap[String(slotIndex)] = done;
+  return { ...completions, [day]: dayMap };
 }
 
 export function clearSlotTimeOverride(

@@ -11,12 +11,16 @@ import {
   clearProgram,
   extractGramsTotal,
   loadLogs,
+  loadSlotCompletions,
   loadSlotOverrides,
   patchSlotOverride,
   removeLogEntry,
   saveLogs,
+  saveSlotCompletions,
   saveSlotOverrides,
+  setSlotCompletion,
   type AllLogs,
+  type SlotCompletions,
   type SlotOverride,
   type SlotOverrides,
   type UserProfile,
@@ -42,10 +46,12 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
   const [now, setNow] = useState<Date>(() => new Date());
   const [logs, setLogs] = useState<AllLogs>({});
   const [overrides, setOverrides] = useState<SlotOverrides>({});
+  const [completions, setCompletions] = useState<SlotCompletions>({});
 
   useEffect(() => {
     setLogs(loadLogs());
     setOverrides(loadSlotOverrides());
+    setCompletions(loadSlotCompletions());
   }, []);
 
   useEffect(() => {
@@ -96,6 +102,16 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
     saveSlotOverrides(next);
   }
 
+  function handleToggleSlotDone(
+    day: number,
+    slotIndex: number,
+    done: boolean
+  ) {
+    const next = setSlotCompletion(completions, day, slotIndex, done);
+    setCompletions(next);
+    saveSlotCompletions(next);
+  }
+
   const proteinConsumed = useMemo(() => {
     if (!currentDay) return 0;
     const dayLogs = logs[currentDay] ?? {};
@@ -129,6 +145,8 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 currentDay={currentDay}
                 selectedDay={selectedDay}
                 onSelectDay={setSelectedDay}
+                logs={logs}
+                completions={completions}
               />
 
               <Timeline
@@ -137,9 +155,11 @@ export default function Dashboard({ schedule, profile, onReset }: Props) {
                 nowMinutes={nowMinutes}
                 logs={logs}
                 overrides={overrides[selectedDay]}
+                completions={completions}
                 onAddEntry={handleAddEntry}
                 onRemoveEntry={handleRemoveEntry}
                 onPatchSlot={handlePatchSlot}
+                onToggleSlotDone={handleToggleSlotDone}
               />
 
               <section className="px-3 sm:px-5 pb-4 sm:pb-5 -mt-1">

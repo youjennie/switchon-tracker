@@ -9,8 +9,14 @@ import {
   type SlotKind,
 } from "@/lib/schedule";
 import { formatSlotTime } from "@/lib/i18n";
-import type { AllLogs, FoodEntry, SlotOverride } from "@/lib/storage";
-import { isSlotDone, validateEntry } from "@/lib/foodCheck";
+import type {
+  AllLogs,
+  FoodEntry,
+  SlotCompletions,
+  SlotOverride,
+} from "@/lib/storage";
+import { validateEntry } from "@/lib/foodCheck";
+import { isEffectiveDone, dayPercent } from "@/lib/progress";
 import { pickWorkoutIcon } from "@/lib/icons";
 import { useLang } from "./LangProvider";
 
@@ -21,6 +27,8 @@ type Props = {
   logs: AllLogs;
   /** Per-slot overrides for this day, keyed by slotIndex string. */
   overrides?: Record<string, SlotOverride>;
+  /** Full completions store (all days). */
+  completions: SlotCompletions;
   onAddEntry: (day: number, slotIndex: number, text: string) => void;
   onRemoveEntry: (day: number, slotIndex: number, entryId: string) => void;
   onPatchSlot: (
@@ -28,6 +36,7 @@ type Props = {
     slotIndex: number,
     patch: Partial<SlotOverride>
   ) => void;
+  onToggleSlotDone: (day: number, slotIndex: number, done: boolean) => void;
 };
 
 const DEFAULT_KIND_ICON: Record<SlotKind, string> = {
@@ -60,11 +69,14 @@ export default function Timeline({
   nowMinutes,
   logs,
   overrides,
+  completions,
   onAddEntry,
   onRemoveEntry,
   onPatchSlot,
+  onToggleSlotDone,
 }: Props) {
   const { t, lang } = useLang();
+  const percent = dayPercent(plan, logs, completions);
 
   // Apply overrides to each slot.
   const slots: DaySlot[] = plan.slots.map((s, i) => {
@@ -115,6 +127,24 @@ export default function Timeline({
       <p className="text-xs sm:text-sm text-[var(--color-muted)] mb-2 max-w-xl leading-relaxed">
         {t(PHASE_SUMMARY_KEY[plan.phase])}
       </p>
+
+      <div className="mb-3 max-w-xl">
+        <div className="flex items-baseline justify-between mb-1">
+          <span className="text-[11px] font-bold text-[var(--color-muted)] uppercase tracking-wider">
+            {t("timeline.dayProgress")}
+          </span>
+          <span className="text-sm font-bold text-[var(--color-sage-deep)] tabular-nums">
+            {t("timeline.percentDone", { n: percent })}
+          </span>
+        </div>
+        <div className="h-2 rounded-full bg-[var(--color-beige)] overflow-hidden">
+          <div
+            className="h-full bg-[var(--color-sage)] transition-all"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+      </div>
+
       <p className="text-[11px] text-[var(--color-faint)] mb-4 italic">
         💡 {t("timeline.proteinHint")}
       </p>
@@ -135,7 +165,7 @@ export default function Timeline({
             const entries: FoodEntry[] = dayLogs[String(i)] ?? [];
             const canLog =
               slot.kind !== "fast-start" && slot.kind !== "fast-end";
-            const done = canLog && isSlotDone(entries, plan.phase, slot.kind);
+            const done = isEffectiveDone(slot, i, plan, logs, completions);
             const canEditWorkout = slot.kind === "workout";
 
             const displayLabel = labelOverride ?? t(slot.labelKey);
@@ -149,8 +179,12 @@ export default function Timeline({
                 key={i}
                 className="relative pl-12 sm:pl-14 print-break-inside-avoid"
               >
-                <div
-                  className={`absolute left-0 top-1.5 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-lg sm:text-xl border-2 transition
+                <button
+                  type="button"
+                  onClick={() => onToggleSlotDone(plan.day, i, !done)}
+                  aria-label={done ? t("timeline.markUndone") : t("timeline.markDone")}
+                  title={done ? t("timeline.markUndone") : t("timeline.markDone")}
+                  className={`absolute left-0 top-1.5 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-lg sm:text-xl border-2 transition cursor-pointer hover:scale-110 active:scale-95
                     ${done ? "bg-[var(--color-sage)] border-[var(--color-sage-deep)] text-white" : ""}
                     ${!done && isActive ? "bg-[var(--color-sage)] border-[var(--color-sage-deep)] text-white scale-110 shadow-md" : ""}
                     ${!done && isPast && !isActive ? "bg-[var(--color-sage-soft)] border-[var(--color-sage)]" : ""}
@@ -164,7 +198,7 @@ export default function Timeline({
                   }}
                 >
                   <span>{done ? "✓" : icon}</span>
-                </div>
+                </button>
 
                 <SlotCard
                   slot={slot}
